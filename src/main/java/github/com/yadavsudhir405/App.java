@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 public class App {
     public String getGreeting() {
         return StringUtils.upperCase("Hello world.");
+
     }
 
     public String toUpperCase(String str){
