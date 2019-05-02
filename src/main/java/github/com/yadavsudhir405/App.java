@@ -11,6 +11,10 @@ public class App {
         return StringUtils.upperCase("Hello world.");
     }
 
+    public String toUpperCase(String str){
+        return StringUtils.upperCase(str);
+    }
+
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
     }
