@@ -7,7 +7,7 @@ plugins {
 
 }
 
-apply from : "gradle/autoversioning.gradle"
+//apply from : "gradle/autoversioning.gradle"
 repositories {
     mavenCentral()
 }

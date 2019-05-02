@@ -1,6 +1,6 @@
 ext.semanticVersion = SemanticVersion.from(version)
 project.ext.'release.useAutomaticVersion' = 'true'
-project.ext.releaseVersion=semanticVersion.releaseVersion()
+project.ext.releaseVersion=semanticVersion.release.releaseVersion()
 project.ext.newVersion=semanticVersion.newVersion()
 
 class SemanticVersion {
