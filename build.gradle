@@ -20,19 +20,7 @@ dependencies {
 
 }
 
-processResources {
-    def version = project.version
-    def revision = file(".git/refs/heads/master").text
-    def buildNo = System.getProperty("BUILD_NUMBER")
 
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version,
-                                                                buildNo: buildNo],
-                                                                revision: revision)
-
-    inputs.property "version", version
-    inputs.property "revision", revision
-    inputs.property "buildNo", buildNo
-}
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 mainClassName = 'github.com.yadavsudhir405.App'
