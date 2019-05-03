@@ -1,6 +1,5 @@
 
 plugins {
-    id 'java'
     id 'java-library'
     id 'net.researchgate.release' version '2.6.0'
     id 'maven-publish'
@@ -19,5 +18,39 @@ dependencies {
 
 }
 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+group = "github.com.yadavsudhir405"
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            artifactId = 'gradle-app'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'internal'
+            url = "https://tools.yadavsudhir.com/archiva/repository/internal"
+            credentials {
+                username = "$mavenUsername"
+                password = "$mavenPassword"
+            }
+        }
+    }
+}
+
+afterReleaseBuild.dependsOn publish
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
