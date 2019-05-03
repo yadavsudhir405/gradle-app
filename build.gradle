@@ -1,7 +1,7 @@
 
 plugins {
     id 'java'
-    id 'application'
+    id 'java-library'
     id 'net.researchgate.release' version '2.6.0'
     id 'maven-publish'
 
@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation 'com.google.guava:guava:27.0.1-jre'
-    implementation 'org.apache.commons:commons-lang3:3.9'
+    api 'org.apache.commons:commons-lang3:3.9'
 
     testImplementation 'junit:junit:4.12'
 
@@ -21,4 +21,3 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-mainClassName = 'github.com.yadavsudhir405.App'
