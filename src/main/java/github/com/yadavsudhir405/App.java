@@ -3,7 +3,13 @@
  */
 package github.com.yadavsudhir405;
 
+import io.reactivex.rxjava3.core.Flowable;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.concurrent.*;
+
+import static java.lang.Thread.sleep;
+
 
 public class App {
     public String getGreeting() {
@@ -14,7 +20,127 @@ public class App {
         return StringUtils.upperCase(str);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+    public static void main(String[] args) throws Exception {
+        testCompletableFuture();
     }
+
+    private static void testCompletableFuture() {
+        CompletableFuture<Integer> cf = new CompletableFuture<>();
+        cf
+                .exceptionally(throwable -> {throw new RuntimeException("Somehitng went wrong");})
+                .thenApply(value -> 2*value) // kind of map function
+                .exceptionally(throwable -> 100) // if any exception thrown in upstream
+                .thenAccept(val -> System.out.println("Value is "+val+ Thread.currentThread().getName()));
+        cf.completeOnTimeout(100, 3, TimeUnit.SECONDS);
+        sleepFor(6);
+        cf.complete(12);
+    }
+
+    private static CompletableFuture<Integer> createCompletableFuture() {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("Creating completeable future->"+Thread.currentThread().getName());
+            sleepFor(2);
+            return 4;
+        });
+    }
+
+    private static void sleepFor(int i) {
+        try {
+            TimeUnit.SECONDS.sleep(i);
+        } catch (InterruptedException e) {
+
+        }
+    }
+
+    public static void testReactive() {
+        Flow.Publisher<Integer> publisher = new Flow.Publisher() {
+            @Override
+            public void subscribe(Flow.Subscriber subscriber) {
+                for(int i=1; i<= 10; i++){
+                    System.out.println("Emitting");
+                    subscriber.onNext(i);
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        Flow.Subscriber<Integer> subscriber = new Flow.Subscriber<Integer>() {
+            private Flow.Subscription subscription;
+
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                this.subscription = subscription;
+            }
+
+            @Override
+            public void onNext(Integer item) {
+                System.out.println("s1:"+item);
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //this.subscription.request(1);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("Error");
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("Complete");
+            }
+        };
+
+        Flow.Subscriber<Integer> subscriber1 = new Flow.Subscriber<Integer>() {
+            private Flow.Subscription subscription;
+
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                this.subscription = subscription;
+            }
+
+            @Override
+            public void onNext(Integer item) {
+                System.out.println("s2:"+item);
+                //this.subscription.request(1);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("Error");
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("Complete");
+            }
+        };
+
+        publisher.subscribe(subscriber);
+        publisher.subscribe(subscriber1);
+    }
+
+    public static void testCallable() throws Exception {
+        final ExecutorService executorService = Executors.newFixedThreadPool(1);
+        final Callable<Object> task = new Callable<>() {
+            @Override
+            public Object call() throws Exception {
+                System.out.println("hello");
+                throw new RuntimeException("Wholla");
+            }
+        };
+
+        final Future<Object> future = executorService.submit(task);
+
+        //future.get();
+        executorService.shutdownNow();
+       // task.call();
+    }
+
 }
