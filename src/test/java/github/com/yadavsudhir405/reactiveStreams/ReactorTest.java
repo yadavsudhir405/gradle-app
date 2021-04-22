@@ -15,7 +15,7 @@ public class ReactorTest {
     @Test
     public void test2() {
         final List<String> words = List.of("the", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
-        Flux.just(words)
+        Flux.fromIterable(words)
                 .subscribe(System.out::println);
     }
 }
