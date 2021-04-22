@@ -16,6 +16,7 @@ public class ReactorTest {
     public void test2() {
         final List<String> words = List.of("the", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
         Flux.fromIterable(words)
+                .zipWith(Flux.range(1, 100), (word, line) -> line +". "+ word)
                 .subscribe(System.out::println);
     }
 }
