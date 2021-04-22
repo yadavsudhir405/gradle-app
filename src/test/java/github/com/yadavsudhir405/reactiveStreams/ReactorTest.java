@@ -5,6 +5,7 @@ import org.junit.Test;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,13 @@ public class ReactorTest {
                 fastClock.filter(tick -> isFastTime()),
                 slowClock.filter(tick -> isSlowTime())
         );
-        clock.subscribe(System.out::println);
+
+        // ticks every second
+        Flux<String > feed = Flux.interval(Duration.ofSeconds(1)).map(tick -> LocalTime.now().toString());
+
+        // emits stream whenever clock emits stream and gets combined with latest from feed
+        clock.withLatestFrom(feed, (tick, time) -> tick + " "+ time)
+                .subscribe(System.out::println);
     }
 
     @After
