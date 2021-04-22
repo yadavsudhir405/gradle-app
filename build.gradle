@@ -11,11 +11,14 @@ repositories {
 }
 
 dependencies {
+    implementation platform('io.projectreactor:reactor-bom:2020.0.6')
+    implementation 'io.projectreactor:reactor-core'
     implementation 'com.google.guava:guava:27.0.1-jre'
     api 'org.apache.commons:commons-lang3:3.9'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.11-RC5'
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'io.projectreactor:reactor-test'
 
 }
 
