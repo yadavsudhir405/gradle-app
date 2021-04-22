@@ -14,8 +14,11 @@ public class ReactorTest {
 
     @Test
     public void test2() {
-        final List<String> words = List.of("the", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
+        final List<String> words = List.of("the", "quick", "brown", "fox", "jumpes", "over", "the", "lazy", "dog");
         Flux.fromIterable(words)
+                .flatMap(word -> Flux.just(word.split("")))
+                .distinct()
+                .sort()
                 .zipWith(Flux.range(1, 100), (word, line) -> line +". "+ word)
                 .subscribe(System.out::println);
     }
